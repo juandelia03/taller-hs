@@ -59,6 +59,7 @@ ambosSon0 x y = (x == 0 && y == 0)
 esMultiploDe ::  Int -> Int -> Bool
 esMultiploDe x y = mod (maximoEntreDos x y) (minimoEntreDos x y) == 0 
 
+digitoUnidades :: Int -> Int
 digitoUnidades x = mod x 10
 
-digitoDecenas x = mod x 100
+digitoDecenas x = div (mod x 100) 10
