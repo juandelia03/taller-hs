@@ -23,7 +23,6 @@ mayorAUno n | n>1 = True -- tira error siempre q le de algo menor a 1
 cuantasRaices b c | b**2 - 4*c > 0 = 2
                   | b**2 - 4*c == 0 = 1
                   | otherwise = 0
-                --   where  b**2 - 4*c
 
 esPar x | mod x 2 == 0 = True 
         | otherwise = False
@@ -62,4 +61,5 @@ esMultiploDe x y = mod (maximoEntreDos x y) (minimoEntreDos x y) == 0
 digitoUnidades :: Int -> Int
 digitoUnidades x = mod x 10
 
+digitoDecenas :: Int -> Int
 digitoDecenas x = div (mod x 100) 10
