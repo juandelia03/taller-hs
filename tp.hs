@@ -26,8 +26,11 @@ potencia c 0 = (1,0)
 potencia c n = producto (potencia c (n-1)) c
 
 raicesCuadratica :: Float -> Float -> Float -> (Complejo, Complejo)
-raicesCuadratica a b c | b**2-(4*a*c)>=0 = (((-b+sqrt(b**2-4*a*c))/(2*a),0), ((-b-sqrt(b**2-4*a*c))/(2*a),0))
-                       | otherwise = ((-b/(2*a),sqrt(-(b**2)+4*a*c)/(2*a)),(-b/(2*a),-sqrt(-(b**2)+4*a*c)/(2*a)))
+raicesCuadratica a b c = (suma ((-b / (2*a)),0) (cociente (fst(raizCuadrada ((discriminanteReal a b c), 0))) (2*a,0)),
+                          suma ((-b / (2*a)),0) (cociente (snd(raizCuadrada ((discriminanteReal a b c), 0))) (2*a,0)))
+
+discriminanteReal :: Float -> Float -> Float -> Float
+discriminanteReal a b c = b^2 - (4*a*c)
 
 modulo :: Complejo -> Float
 modulo c = sqrt ((fst c)**2+(snd c)**2)
@@ -40,13 +43,15 @@ distancia c i = modulo (resta c i)
 
 argumento :: Complejo -> Float
 argumento c | c == (0,0) = 0
-            | fst c == 0 && snd c > 0 = pi/2
-            | fst c == 0 && snd c < 0 = 3*pi/2
-            | snd c == 0 && fst c > 0 = 0
-            | snd c == 0 && fst c < 0 = pi
-            | fst c > 0 = atan ((snd c)/(fst c))
-            | fst c < 0 && snd c < 0 = atan ((snd c)/(fst c)) - pi
-            | fst c < 0 && snd c > 0 = atan ((snd c)/(fst c)) + pi
+               | fst c == 0 && snd c > 0 = pi/2
+               | fst c == 0 && snd c < 0 = 3*pi/2
+               | snd c == 0 && fst c > 0 = 0
+               | snd c == 0 && fst c < 0 = pi
+               | fst c > 0 && (atan ((snd c)/(fst c))) > 0 = atan ((snd c)/(fst c))
+               | fst c > 0 && (atan ((snd c)/(fst c))) < 0 = (atan ((snd c)/(fst c))) + (2 * pi)
+               | fst c < 0 && snd c < 0 && (atan ((snd c)/(fst c)) - pi) > 0 = atan ((snd c)/(fst c)) - pi
+               | fst c < 0 && snd c < 0 && (atan ((snd c)/(fst c)) - pi) < 0 = (atan ((snd c)/(fst c)) - pi) + (2* pi)
+               | fst c < 0 && snd c > 0 = atan ((snd c)/(fst c)) + pi
 
 
 pasarACartesianas :: Float -> Float -> Complejo
@@ -69,4 +74,7 @@ raicesNEsimasAux n k | k==0 = [(pasarACartesianas 1 0)]
 raicesNEsimas :: Integer -> [Complejo]
 raicesNEsimas n = raicesNEsimasAux (fromIntegral n) (fromIntegral(n-1))
 
---sonRaicesNEsimas :: Integer -> [Complejo] -> Float -> Bool
+sonRaicesNEsimas :: Integer -> [Complejo] -> Float -> Bool
+sonRaicesNEsimas n [] e = True
+sonRaicesNEsimas n cs e | modulo (resta (potencia (head(cs)) n) (1,0)) < e = sonRaicesNEsimas n (tail(cs)) e
+                        | otherwise = False
